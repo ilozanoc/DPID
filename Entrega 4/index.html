@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iria Lozano | Data & Harmony</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500;600&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- VARIABLES DE TEMA --- */
+        :root {
+            /* MODO EDITORIAL (Default - Crema y Dorado) */
+            --bg-body: #FFFCF5;
+            --bg-sidebar: #1A1A1A;
+            --bg-card: #FFFFFF;
+            --text-main: #2C2C2C;
+            --text-muted: #666666; /* Gris oscuro para fondo claro */
+            --text-sidebar: #F0F0F0;
+            --accent: #D4AF37;
+            --font-head: 'Cormorant Garamond', serif;
+            --font-body: 'Montserrat', sans-serif;
+            --border-radius: 8px;
+            --shadow: 0 10px 30px rgba(0,0,0,0.05);
+            --filter-img: none;
+            --nav-hover: #D4AF37;
+            --border-color: rgba(0,0,0,0.05);
+        }
+
+        /* MODO DATA ENGINEER (Corrección de Alto Contraste) */
+        body.data-mode {
+            --bg-body: #1e1e1e;
+            --bg-sidebar: #252526;
+            --bg-card: #2d2d2d;
+            --text-main: #ffffff; /* BLANCO PURO para máxima legibilidad */
+            --text-muted: #e0e0e0; /* GRIS MUY CLARO (Plata) para subtítulos */
+            --text-sidebar: #ffffff;
+            --accent: #4da6ff; /* Azul Eléctrico */
+            --font-head: 'Fira Code', monospace;
+            --font-body: 'Montserrat', sans-serif;
+            --border-radius: 4px;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            --filter-img: brightness(0.9);
+            --nav-hover: #4da6ff;
+            --border-color: #3e3e42;
+        }
+
+        /* --- CORRECCIÓN CRÍTICA DE LEGIBILIDAD --- */
+        /* Esto obliga a Bootstrap a usar NUESTROS colores variables en lugar de sus grises por defecto */
+        .text-muted, .small, small {
+            color: var(--text-muted) !important;
+        }
+        .text-white-50 {
+            color: rgba(255, 255, 255, 0.7) !important;
+        }
+        /* ----------------------------------------- */
+
+        /* TRANSICIONES */
+        body, #sidebar-wrapper, .card, h1, h2, h3, h4, p, a, i, img, .btn, .modal-content, span, div {
+            transition: all 0.4s ease-in-out;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            overflow-x: hidden;
+            line-height: 1.7;
+        }
+
+        h1, h2, h3, h4 { font-family: var(--font-head); font-weight: 600; color: var(--text-main); }
+
+        /* --- SIDEBAR --- */
+        #sidebar-wrapper {
+            min-height: 100vh;
+            width: 280px;
+            position: fixed;
+            left: 0; top: 0;
+            background-color: var(--bg-sidebar);
+            color: var(--text-sidebar);
+            padding: 2rem;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+        }
+
+        #page-content-wrapper {
+            margin-left: 280px;
+            padding: 0;
+            width: calc(100% - 280px);
+        }
+
+        /* Enlaces del menú */
+        .sidebar-nav { padding: 0; list-style: none; margin-top: 2rem; }
+        .sidebar-nav li { margin-bottom: 1.2rem; }
+        .sidebar-nav a {
+            color: rgba(255,255,255,0.7); /* Más brillante en sidebar */
+            text-decoration: none;
+            font-family: var(--font-head);
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+        }
+        body.data-mode .sidebar-nav a { font-family: 'Fira Code', monospace; font-size: 1rem; color: #e0e0e0; }
+
+        .sidebar-nav a:hover, .sidebar-nav a.active {
+            color: var(--nav-hover);
+            padding-left: 10px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 4px;
+        }
+        
+        body.data-mode .sidebar-nav a.active::before { content: './'; color: var(--accent); margin-right: 5px; }
+
+        /* Foto Perfil */
+        .profile-img {
+            width: 110px; height: 110px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent);
+            margin-bottom: 1rem;
+            filter: var(--filter-img);
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        }
+
+        /* --- INTERRUPTOR MÁGICO --- */
+        .mode-switch-container {
+            background: rgba(255,255,255,0.1);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        body.data-mode .mode-switch-container {
+            background: #2d2d2d;
+            border: 1px solid var(--accent);
+        }
+        .form-check-input:checked {
+            background-color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        /* --- SECCIONES --- */
+        section {
+            padding: 100px 8%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .section-header {
+            margin-bottom: 50px;
+            border-left: 4px solid var(--accent);
+            padding-left: 25px;
+        }
+        .section-header h2 { font-size: 3.5rem; margin: 0; line-height: 1; }
+        .section-header span { 
+            text-transform: uppercase; 
+            letter-spacing: 3px; 
+            font-size: 0.85rem; 
+            color: var(--text-muted) !important; /* Forzado */
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 10px;
+        }
+        
+        body.data-mode .section-header h2 { color: var(--accent); }
+        body.data-mode .section-header h2::before { content: '<'; opacity: 0.5; margin-right: 5px; }
+        body.data-mode .section-header h2::after { content: ' />'; opacity: 0.5; margin-left: 5px; }
+
+        /* --- TIMELINE --- */
+        .timeline { border-left: 2px solid var(--accent); margin-left: 10px; padding-left: 30px; }
+        .timeline-item { position: relative; margin-bottom: 40px; }
+        .timeline-item::before {
+            content: ''; position: absolute; left: -37px; top: 8px;
+            width: 16px; height: 16px; background: var(--bg-body); 
+            border: 3px solid var(--accent); border-radius: 50%;
+            transition: all 0.3s;
+        }
+        .timeline-item:hover::before { background: var(--accent); }
+        .timeline-year { 
+            font-weight: 700; color: var(--accent); 
+            font-family: var(--font-head); font-size: 1.3rem; 
+        }
+
+        /* --- PROYECTOS --- */
+        .project-item {
+            position: relative; overflow: hidden;
+            border-radius: var(--border-radius);
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+        }
+        .project-img { width: 100%; height: 280px; object-fit: cover; transition: 0.6s ease; filter: var(--filter-img); }
+        .project-content { padding: 25px; }
+        
+        .project-overlay {
+            position: absolute; top: 0; left: 0; right: 0; height: 280px;
+            background: rgba(0,0,0,0.7);
+            opacity: 0; transition: 0.3s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .project-item:hover .project-img { transform: scale(1.05); }
+        .project-item:hover .project-overlay { opacity: 1; }
+
+        /* Badge Tecnologías */
+        .tech-badge {
+            font-size: 0.75rem;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background: rgba(0,0,0,0.05);
+            color: var(--text-muted) !important;
+            margin-right: 5px;
+            font-weight: 600;
+            border: 1px solid var(--border-color);
+        }
+        body.data-mode .tech-badge { 
+            background: rgba(255,255,255,0.1); 
+            color: #ffffff !important; /* Blanco forzado en badges */
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        /* --- BLOG --- */
+        .blog-list-item {
+            display: flex;
+            align-items: baseline;
+            padding: 25px 0;
+            border-bottom: 1px solid var(--border-color);
+            transition: 0.3s;
+            text-decoration: none;
+            color: var(--text-main);
+            cursor: pointer;
+        }
+        .blog-list-item:hover { padding-left: 15px; border-bottom-color: var(--accent); }
+        .blog-date { width: 120px; font-size: 0.85rem; color: var(--text-muted) !important; font-weight: 500; font-family: 'Fira Code', monospace; }
+        .blog-title { font-size: 1.6rem; font-family: var(--font-head); flex-grow: 1; margin: 0; font-weight: 600; }
+        .blog-tag { font-size: 0.75rem; text-transform: uppercase; color: var(--accent); margin-right: 20px; letter-spacing: 1px; }
+
+        /* --- MODALES --- */
+        .modal-content {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+        .modal-header { border-bottom: 1px solid var(--border-color); }
+        .btn-close { filter: invert(0.5); }
+        body.data-mode .btn-close { filter: invert(1); } /* X blanca en modo oscuro */
+
+        /* --- BOTONES --- */
+        .btn-gold {
+            background-color: var(--accent);
+            color: white; 
+            border-radius: var(--border-radius);
+            padding: 12px 35px;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            border: none;
+            font-weight: 600;
+        }
+        body.data-mode .btn-gold {
+            background-color: transparent;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+            text-transform: none;
+            font-family: 'Fira Code', monospace;
+        }
+        body.data-mode .btn-gold:hover {
+            background-color: var(--accent);
+            color: #1e1e1e;
+            box-shadow: 0 0 15px var(--accent);
+        }
+
+        /* --- FORMULARIOS (Corrección Color Texto) --- */
+        .form-control {
+            color: var(--text-main) !important;
+            background-color: transparent !important;
+        }
+        .form-control:focus {
+            color: var(--text-main) !important;
+            background-color: transparent !important;
+            box-shadow: none;
+            border-color: var(--accent);
+        }
+        .form-floating label { color: var(--text-muted) !important; }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 992px) {
+            #sidebar-wrapper { transform: translateX(-100%); }
+            #sidebar-wrapper.active { transform: translateX(0); }
+            #page-content-wrapper { margin-left: 0; width: 100%; }
+            .mobile-nav-toggle { display: block !important; position: fixed; top: 20px; right: 20px; z-index: 1001; background: var(--bg-sidebar); color: white; border: none; padding: 12px; border-radius: 5px; }
+            .section-header h2 { font-size: 2.5rem; }
+        }
+        .mobile-nav-toggle { display: none; }
+
+        /* Efecto Typing solo en modo data */
+        body.data-mode .typing::after { content: '|'; animation: blink 1s infinite; color: var(--accent); }
+        @keyframes blink { 50% { opacity: 0; } }
+
+    </style>
+</head>
+<body>
+
+    <button class="mobile-nav-toggle" onclick="document.getElementById('sidebar-wrapper').classList.toggle('active')">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div id="sidebar-wrapper">
+        <div class="text-center mt-3">
+            <img src="foto.jpg" alt="Iria" class="profile-img">
+            <h3 class="mt-3 mb-0" id="profile-name">Iria Lozano</h3>
+            <p class="small opacity-75 mt-1 text-white-50" id="profile-role">Ingeniería & Datos</p>
+        </div>
+
+        <div class="mode-switch-container">
+            <div class="form-check form-switch d-flex justify-content-center align-items-center ps-0">
+                <label class="form-check-label me-2 text-white small opacity-75" for="modeSwitch"><i class="fas fa-music"></i></label>
+                <input class="form-check-input mx-2" type="checkbox" id="modeSwitch" style="width: 40px; height: 20px; cursor: pointer;">
+                <label class="form-check-label ms-2 text-white small opacity-75" for="modeSwitch" id="modeLabel"><i class="fas fa-code"></i></label>
+            </div>
+            <span class="small text-white-50 d-block mt-2" style="font-size: 0.7rem;">Click para cambiar visión</span>
+        </div>
+
+        <ul class="sidebar-nav">
+            <li><a href="#inicio" class="active">Inicio</a></li>
+            <li><a href="#sobre-mi">Trayectoria</a></li>
+            <li><a href="#proyectos">Proyectos</a></li>
+            <li><a href="#blog">Blog</a></li>
+            <li><a href="#contacto">Contacto</a></li>
+        </ul>
+
+        <div class="mt-auto text-center mb-4">
+            <a href="#" class="text-white me-3 opacity-50 hover-opacity-100 fs-5"><i class="fab fa-linkedin"></i></a>
+            <a href="#" class="text-white opacity-50 hover-opacity-100 fs-5"><i class="fab fa-github"></i></a>
+        </div>
+    </div>
+
+    <div id="page-content-wrapper">
+
+        <section id="inicio">
+            <div class="container">
+                <span class="text-uppercase ls-2 mb-3 d-block fw-bold text-muted" style="color:var(--accent) !important" id="hero-badge">Portfolio 2025</span>
+                
+                <h1 class="display-1 mb-4" id="hero-title">Ingeniería,<br>Datos y Armonía.</h1>
+                
+                <p class="lead mb-5 w-75 text-muted" id="hero-desc">Soy Iria Lozano Carrasco. Transformo el caos de los datos en estructuras lógicas, aplicando la disciplina del conservatorio al desarrollo de software.</p>
+                
+                <div class="d-flex align-items-center">
+                    <a href="#proyectos" class="btn btn-gold me-4 shadow-sm">Explorar Trabajo</a>
+                    <a href="CV.pdf" class="text-decoration-none fw-bold" style="color:var(--text-main)">
+                        <i class="fas fa-file-download me-2" style="color:var(--accent)"></i> Descargar CV
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="sobre-mi">
+            <div class="section-header">
+                <span id="label-about">Contexto</span>
+                <h2>Mi Historia</h2>
+            </div>
+            <div class="row">
+                <div class="col-lg-6 mb-5 mb-lg-0">
+                    <p class="lead mb-4">No sigo el camino tradicional. Mi enfoque técnico nace de una formación artística rigurosa.</p>
+                    <p class="text-muted">Encontré que programar y componer música tienen la misma base: estructura, patrones y resolución de problemas. Ahora uso Python como antes usaba el piano: para crear orden a partir del caos.</p>
+                    
+                    <div class="row mt-5">
+                        <div class="col-6 mb-4">
+                            <h1 class="display-4 fw-bold" style="color:var(--accent)">3</h1>
+                            <span class="small text-uppercase fw-bold text-muted">Años en Ingeniería</span>
+                        </div>
+                        <div class="col-6 mb-4">
+                            <h1 class="display-4 fw-bold" style="color:var(--accent)">10</h1>
+                            <span class="small text-uppercase fw-bold text-muted">Años en Música</span>
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded mt-2" style="background-color: var(--bg-card); border: 1px solid var(--border-color);">
+                        <h5 class="mb-3 font-family-head">Tech Stack</h5>
+                        <div>
+                            <span class="tech-badge mb-2 d-inline-block">Python</span>
+                            <span class="tech-badge mb-2 d-inline-block">SQL</span>
+                            <span class="tech-badge mb-2 d-inline-block">MongoDB</span>
+                            <span class="tech-badge mb-2 d-inline-block">Pandas</span>
+                            <span class="tech-badge mb-2 d-inline-block">Docker</span>
+                            <span class="tech-badge mb-2 d-inline-block">Kubernetes</span>
+                            <span class="tech-badge mb-2 d-inline-block">scikit-learn</span>
+                            <span class="tech-badge mb-2 d-inline-block">HTML</span>
+                            <span class="tech-badge mb-2 d-inline-block">CSS</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-5 offset-lg-1">
+                    <div class="timeline mt-2">
+                        <div class="timeline-item">
+                            <div class="timeline-year">2013 - 2023</div>
+                            <h4 class="mb-1">Conservatorio Pablo Sorozábal</h4>
+                            <p class="small text-muted">Profesional de Música (Piano). Análisis y Armonía. Desarrollo de disciplina y pensamiento abstracto.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-year">2023 - Presente</div>
+                            <h4 class="mb-1">Ingeniería de Datos (UPM)</h4>
+                            <p class="small text-muted">Especialización en Backend, Big Data y Aprendizaje Automático.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-year">Actualidad</div>
+                            <h4 class="mb-1">Desarrollo de Proyectos</h4>
+                            <p class="small text-muted">Aplicando modelos de IA no supervisada en imagen médica y gestión de bases de datos.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="proyectos">
+            <div class="section-header">
+                <span id="label-projects">Portfolio</span>
+                <h2>Proyectos Destacados</h2>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-12 mb-5">
+                    <div class="project-item d-flex flex-column flex-md-row">
+                        <div class="col-md-7 position-relative">
+                            <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1200&q=80" class="project-img h-100" alt="OCT Analysis">
+                            <div class="project-overlay">
+                                <a href="#" class="btn btn-outline-light btn-sm" data-bs-toggle="modal" data-bs-target="#modalOCT">Ver Análisis Completo</a>
+                            </div>
+                        </div>
+                        <div class="col-md-5 project-content d-flex flex-column justify-content-center">
+                            <span class="text-uppercase small fw-bold mb-2" style="color:var(--accent)">Machine Learning / Visión</span>
+                            <h3 class="mb-3">Clustering No Supervisado en Imágenes OCT</h3>
+                            <p class="text-muted small mb-4">Análisis de 5600 imágenes médicas de retina para identificar patrones sin etiquetado previo. Uso de embeddings y reducción de dimensionalidad.</p>
+                            <div>
+                                <span class="tech-badge">ResNet50</span>
+                                <span class="tech-badge">PCA</span>
+                                <span class="tech-badge">K-Means</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+        <section id="blog">
+            <div class="section-header">
+                <span id="label-blog">Pensamientos</span>
+                <h2>Artículos</h2>
+            </div>
+            <div class="list-group list-group-flush border-top border-secondary border-opacity-25">
+                
+                <div class="blog-list-item" data-bs-toggle="modal" data-bs-target="#modalBlog1">
+                    <span class="blog-tag">Historia</span>
+                    <h3 class="blog-title">De la armonía musical al SQL</h3>
+                    <div class="blog-date text-end">DIC 2025</div>
+                </div>
+
+                <div class="blog-list-item" data-bs-toggle="modal" data-bs-target="#modalBlog3">
+                    <span class="blog-tag">Python</span>
+                    <h3 class="blog-title">Visualización de Datos: Más allá del gráfico de barras</h3>
+                    <div class="blog-date text-end">NOV 2025</div>
+                </div>
+                
+                <div class="blog-list-item" data-bs-toggle="modal" data-bs-target="#modalBlog4">
+                    <span class="blog-tag">DevOps</span>
+                    <h3 class="blog-title">Docker para principiantes</h3>
+                    <div class="blog-date text-end">OCT 2025</div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="contacto" style="background-color: var(--bg-card);">
+            <div class="row justify-content-center">
+                <div class="col-lg-6 text-center">
+                    <h2 class="mb-3">¿Colaboramos?</h2>
+                    <p class="text-muted mb-5">Estoy abierta a colaboraciones académicas y proyectos de ingeniería de datos.</p>
+                    
+                    <form action="https://formsubmit.co/lc.iria26@gmail.com" method="POST" class="text-start">
+                        <div class="form-floating mb-3">
+                            <input type="email" name="email" class="form-control border-0 shadow-sm" id="floatingInput" placeholder="name@example.com" required>
+                            <label for="floatingInput">Email</label>
+                        </div>
+                        <div class="form-floating mb-4">
+                            <textarea name="message" class="form-control border-0 shadow-sm" style="height: 120px" placeholder="Mensaje" id="floatingTextarea" required></textarea>
+                            <label for="floatingTextarea">Mensaje</label>
+                        </div>
+                        <button type="submit" class="btn btn-gold w-100 py-3">INICIAR CONVERSACIÓN</button>
+                    </form>
+
+                    <div class="mt-5 text-muted small">
+                        <p>Leganés, Madrid | +34 629 13 58 42</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <div class="modal fade" id="modalOCT" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Análisis de Imágenes OCT (No Supervisado)</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-5">
+                    <h4 class="mb-3">El Reto: Diagnóstico sin Etiquetas</h4>
+                    <p class="text-muted">El objetivo de este proyecto fue analizar un conjunto de <strong>5600 imágenes de Tomografía de Coherencia Óptica (OCT)</strong> macular. El desafío principal radicaba en la naturaleza "no supervisada" del problema: no contábamos con etiquetas médicas previas.</p>
+                    
+                    <h5 class="mt-4">Modelos Utilizados</h5>
+                    <ul>
+                        <li><strong>ResNet50:</strong> CNN clásica para texturas locales.</li>
+                        <li><strong>Vision Transformer (ViT):</strong> Arquitectura de atención para contexto global.</li>
+                        <li><strong>Swin Transformer:</strong> Modelo jerárquico moderno.</li>
+                    </ul>
+
+                    <h5 class="mt-4">Resultados</h5>
+                    <p class="text-muted">Los modelos Transformer (ViT y Swin) generaron agrupaciones más coherentes que ResNet. Utilizamos PCA para reducir dimensionalidad y K-Means para el clustering final.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalBlog1" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-5 pt-0">
+                    <h2 class="mb-4 mt-2">De la armonía musical al SQL</h2>
+                    <p class="text-muted">En el conservatorio aprendí a escuchar estructuras antes que notas. Una melodía no flota en el vacío; se apoya en una progresión armónica. Ese mismo enfoque lo aplico ahora cuando diseño una base de datos.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        const toggle = document.getElementById('modeSwitch');
+        const body = document.body;
+        const heroTitle = document.getElementById('hero-title');
+        const heroDesc = document.getElementById('hero-desc');
+        const heroBadge = document.getElementById('hero-badge');
+
+        const originalTitle = "Ingeniería,<br>Datos y Armonía.";
+        const techTitle = "class DataEngineer<br>extends Musician {";
+        const originalDesc = "Soy Iria Lozano. Transformo el caos de los datos en estructuras lógicas, aplicando la disciplina del conservatorio al desarrollo de software.";
+        const techDesc = "Transforming chaos into structured logic. Leveraging algorithmic thinking derived from musical theory to build robust data pipelines.";
+
+        toggle.addEventListener('change', () => {
+            if (toggle.checked) {
+                body.classList.add('data-mode');
+                heroTitle.innerHTML = techTitle;
+                heroDesc.textContent = techDesc;
+                heroBadge.textContent = "System.init(2025)";
+            } else {
+                body.classList.remove('data-mode');
+                heroTitle.innerHTML = originalTitle;
+                heroDesc.textContent = originalDesc;
+                heroBadge.textContent = "Portfolio 2025";
+            }
+        });
+    </script>
+</body>
+</html>
